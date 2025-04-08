@@ -29,3 +29,20 @@ def create_tables(conn):
    );
    """)
    conn.commit()
+
+def get_or_create_location(conn, city_name, latitude, longitude):
+   cur = conn.cursor()
+   cur.execute("""
+       SELECT location_id
+       FROM locations
+       WHERE latitude = ? AND longitude = ?
+   """, (latitude, longitude))
+   row = cur.fetchone()
+   if row:
+       return row[0]
+   cur.execute("""
+       INSERT INTO locations (city_name, latitude, longitude)
+       VALUES (?, ?, ?)
+   """, (city_name, latitude, longitude))
+   conn.commit()
+   return cur.lastrowid
