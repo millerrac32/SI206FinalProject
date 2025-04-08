@@ -61,3 +61,27 @@ def fetch_open_meteo_data(latitude, longitude, start_date, end_date):
    response.raise_for_status()
    data = response.json()
    return data
+
+def store_hourly_data(conn, location_id, weather_data):
+   cur = conn.cursor()
+   hourly_timestamps = weather_data["hourly"]["time"]
+   temperatures = weather_data["hourly"]["temperature_2m"]
+   precipitations = weather_data["hourly"]["precipitation"]
+   rows_inserted = 0
+   for i in range(len(hourly_timestamps)):
+       if rows_inserted >= 25:
+           break
+       time_utc = hourly_timestamps[i]
+       temp = temperatures[i]
+       precip = precipitations[i]
+       try:
+           cur.execute("""
+               INSERT OR IGNORE INTO hourly_weather (location_id, time_utc, temperature_2m, precipitation)
+               VALUES (?, ?, ?, ?)
+           """, (location_id, time_utc, temp, precip))
+           if cur.rowcount > 0:
+               rows_inserted += 1
+       except sqlite3.IntegrityError:
+           pass
+   conn.commit()
+   print(f"Inserted {rows_inserted} new hourly rows for location_id={location_id}.")
