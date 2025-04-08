@@ -1,1 +1,31 @@
+import requests
+import sqlite3
+import matplotlib.pyplot as plt
 
+
+DB_NAME = "open_meteo.db"
+
+
+def create_tables(conn):
+   cur = conn.cursor()
+   cur.execute("""
+   CREATE TABLE IF NOT EXISTS locations (
+       location_id INTEGER PRIMARY KEY AUTOINCREMENT,
+       city_name TEXT,
+       latitude REAL,
+       longitude REAL,
+       UNIQUE(latitude, longitude)
+   );
+   """)
+   cur.execute("""
+   CREATE TABLE IF NOT EXISTS hourly_weather (
+       weather_id INTEGER PRIMARY KEY AUTOINCREMENT,
+       location_id INTEGER,
+       time_utc TEXT,
+       temperature_2m REAL,
+       precipitation REAL,
+       FOREIGN KEY(location_id) REFERENCES locations(location_id),
+       UNIQUE(location_id, time_utc)
+   );
+   """)
+   conn.commit()
