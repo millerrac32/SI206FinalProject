@@ -46,3 +46,18 @@ def get_or_create_location(conn, city_name, latitude, longitude):
    """, (city_name, latitude, longitude))
    conn.commit()
    return cur.lastrowid
+
+def fetch_open_meteo_data(latitude, longitude, start_date, end_date):
+   base_url = "https://api.open-meteo.com/v1/forecast"
+   params = {
+       "latitude": latitude,
+       "longitude": longitude,
+       "start_date": start_date,
+       "end_date": end_date,
+       "hourly": "temperature_2m,precipitation",
+       "timezone": "UTC"
+   }
+   response = requests.get(base_url, params=params)
+   response.raise_for_status()
+   data = response.json()
+   return data
