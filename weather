@@ -1,87 +1,229 @@
 import requests
 import sqlite3
+import datetime
 import matplotlib.pyplot as plt
 
 
 DB_NAME = "open_meteo.db"
+USER_AGENT = "SI206Project/1.0 (your_email@umich.edu)"  
+
+BASE_URL = "https://api.open-meteo.com/v1/forecast"
+LATITUDE = 52.52       
+LONGITUDE = 13.41
+FORECAST_DAYS = 7     
+HOURLY_PARAMS = "temperature_2m"
+MAX_NEW_ROWS_PER_RUN = 25
+ANALYSIS_OUTPUT_FILE = "analysis_results.txt"
+
+def create_tables():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS locations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            city_name TEXT,
+            latitude REAL NOT NULL,
+            longitude REAL NOT NULL
+        );
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS hourly_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            location_id INTEGER NOT NULL,
+            time TEXT NOT NULL,
+            temperature_2m REAL,
+            FOREIGN KEY (location_id) REFERENCES locations(id),
+            UNIQUE(location_id, time)
+        );
+    """)
+    conn.commit()
+    conn.close()
+
+def get_or_create_location(latitude, longitude, city_name="Unknown"):
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id FROM locations
+        WHERE latitude = ? AND longitude = ?
+    """, (latitude, longitude))
+    row = cur.fetchone()
+
+    if row:
+        location_id = row[0]
+    else:
+        cur.execute("""
+            INSERT INTO locations (city_name, latitude, longitude)
+            VALUES (?, ?, ?)
+        """, (city_name, latitude, longitude))
+        conn.commit()
+        location_id = cur.lastrowid
+
+    conn.close()
+    return location_id
 
 
-def create_tables(conn):
-   cur = conn.cursor()
-   cur.execute("""
-   CREATE TABLE IF NOT EXISTS locations (
-       location_id INTEGER PRIMARY KEY AUTOINCREMENT,
-       city_name TEXT,
-       latitude REAL,
-       longitude REAL,
-       UNIQUE(latitude, longitude)
-   );
-   """)
-   cur.execute("""
-   CREATE TABLE IF NOT EXISTS hourly_weather (
-       weather_id INTEGER PRIMARY KEY AUTOINCREMENT,
-       location_id INTEGER,
-       time_utc TEXT,
-       temperature_2m REAL,
-       precipitation REAL,
-       FOREIGN KEY(location_id) REFERENCES locations(location_id),
-       UNIQUE(location_id, time_utc)
-   );
-   """)
-   conn.commit()
+def fetch_weather_data(latitude, longitude, days=7):
+    print(f"Retreiving weather data for lat={latitude}, lon={longitude}")
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "hourly": HOURLY_PARAMS, 
+        "forecast_days": days,
+        "timezone": "UTC"
+    }
+    headers = {"User-Agent": USER_AGENT}
 
-def get_or_create_location(conn, city_name, latitude, longitude):
-   cur = conn.cursor()
-   cur.execute("""
-       SELECT location_id
-       FROM locations
-       WHERE latitude = ? AND longitude = ?
-   """, (latitude, longitude))
-   row = cur.fetchone()
-   if row:
-       return row[0]
-   cur.execute("""
-       INSERT INTO locations (city_name, latitude, longitude)
-       VALUES (?, ?, ?)
-   """, (city_name, latitude, longitude))
-   conn.commit()
-   return cur.lastrowid
+    try:
+        response = requests.get(BASE_URL, params=params, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+        return None
 
-def fetch_open_meteo_data(latitude, longitude, start_date, end_date):
-   base_url = "https://api.open-meteo.com/v1/forecast"
-   params = {
-       "latitude": latitude,
-       "longitude": longitude,
-       "start_date": start_date,
-       "end_date": end_date,
-       "hourly": "temperature_2m,precipitation",
-       "timezone": "UTC"
-   }
-   response = requests.get(base_url, params=params)
-   response.raise_for_status()
-   data = response.json()
-   return data
+def extract_hourly_info(data):
+    if not data or "hourly" not in data:
+        return []
+    times = data["hourly"].get("time", [])
+    temps = data["hourly"].get("temperature_2m", [])
+    hourly_records = []
+    for i in range(len(times)):
+        record_time = times[i]
+        record_temp = temps[i]
+        hourly_records.append({
+            "time": record_time,
+            "temperature_2m": record_temp
+        })
 
-def store_hourly_data(conn, location_id, weather_data):
-   cur = conn.cursor()
-   hourly_timestamps = weather_data["hourly"]["time"]
-   temperatures = weather_data["hourly"]["temperature_2m"]
-   precipitations = weather_data["hourly"]["precipitation"]
-   rows_inserted = 0
-   for i in range(len(hourly_timestamps)):
-       if rows_inserted >= 25:
-           break
-       time_utc = hourly_timestamps[i]
-       temp = temperatures[i]
-       precip = precipitations[i]
-       try:
-           cur.execute("""
-               INSERT OR IGNORE INTO hourly_weather (location_id, time_utc, temperature_2m, precipitation)
-               VALUES (?, ?, ?, ?)
-           """, (location_id, time_utc, temp, precip))
-           if cur.rowcount > 0:
-               rows_inserted += 1
-       except sqlite3.IntegrityError:
-           pass
-   conn.commit()
-   print(f"Inserted {rows_inserted} new hourly rows for location_id={location_id}.")
+    return hourly_records
+
+def store_hourly_data(location_id, hourly_data):
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    inserted_count = 0
+    allowed_rows = MAX_NEW_ROWS_PER_RUN
+
+    for record in hourly_data:
+        if inserted_count >= allowed_rows:
+            break
+        time_val = record["time"]
+        temp_val = record["temperature_2m"]
+        try:
+            cur.execute("""
+                INSERT OR IGNORE INTO hourly_data (location_id, time, temperature_2m)
+                VALUES (?, ?, ?)
+            """, (location_id, time_val, temp_val))
+
+            if cur.rowcount == 1:
+                inserted_count += 1
+        except sqlite3.Error as e:
+            print(f"SQLite error inserting {record}: {e}")
+            continue
+
+    conn.commit()
+    conn.close()
+    return inserted_count
+
+
+def load_joined_data():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT L.city_name, H.time, H.temperature_2m
+        FROM hourly_data AS H
+        JOIN locations AS L
+        ON H.location_id = L.id
+        ORDER BY H.time
+    """)
+    results = cur.fetchall()
+    conn.close()
+    return results
+
+def analyze_data(data):
+    if not data:
+        return (0, {})
+    total_temp = 0
+    count = 0
+    day_of_week_counts = {i: 0 for i in range(7)}
+    for city, time_str, temp in data:
+        if temp is not None:
+            total_temp += temp
+            count += 1
+        dt = datetime.datetime.fromisoformat(time_str)
+        day_idx = dt.weekday()  
+        day_of_week_counts[day_idx] += 1
+
+    avg_temp = (total_temp / count) if count > 0 else 0
+    return (avg_temp, day_of_week_counts)
+
+def write_analysis_to_file(avg_temp, day_of_week_counts):
+    with open(ANALYSIS_OUTPUT_FILE, "w") as f:
+        f.write("=== Analysis Results ===\n\n")
+        f.write(f"Average Temperature: {avg_temp:.2f} °C\n\n")
+
+        f.write("Day-of-Week Frequency (Mon=0 ... Sun=6):\n")
+        for dow in range(7):
+            f.write(f"  Day {dow}: {day_of_week_counts[dow]} data points\n")
+        f.write("\n")
+
+
+def create_visualizations(data):
+    times = []
+    temps = []
+    for city, time_str, temp in data:
+        dt = datetime.datetime.fromisoformat(time_str)
+        times.append(dt)
+        temps.append(temp)
+    plt.figure()
+    plt.plot(times, temps)
+    plt.title("Temperature Over Time")
+    plt.xlabel("Time")
+    plt.ylabel("Temperature (°C)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig("temperature_over_time.png")
+    plt.close()
+
+    plt.figure()
+    plt.hist(temps, bins=10)
+    plt.title("Temperature Distribution")
+    plt.xlabel("Temperature (°C)")
+    plt.ylabel("Frequency")
+    plt.tight_layout()
+    plt.savefig("temperature_distribution.png")
+    plt.close()
+
+
+def main():
+    create_tables()
+
+    location_id = get_or_create_location(LATITUDE, LONGITUDE, "Berlin")
+
+    data = fetch_weather_data(LATITUDE, LONGITUDE, FORECAST_DAYS)
+
+    hourly_info = extract_hourly_info(data)
+    print(f"Fetched {len(hourly_info)} hourly records from Open-Meteo.")
+
+    inserted = store_hourly_data(location_id, hourly_info)
+    print(f"Inserted {inserted} new rows")
+    if inserted == 0:
+        print("reached the 25-row limit")
+
+    print("\n--- Analysis ---")
+
+    joined_data = load_joined_data()
+
+    print(f"Total records in DB: {len(joined_data)}")
+
+
+    avg_temp, day_counts = analyze_data(joined_data)
+
+    write_analysis_to_file(avg_temp, day_counts)
+
+    create_visualizations(joined_data)
+
+
+if __name__ == "__main__":
+    main()
