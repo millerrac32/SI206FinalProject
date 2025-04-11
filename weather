@@ -2,18 +2,25 @@ import requests
 import sqlite3
 import datetime
 import matplotlib.pyplot as plt
-
+import json
+import os
 
 DB_NAME = "open_meteo.db"
-USER_AGENT = "SI206Project/1.0 (your_email@umich.edu)"  
-
+USER_AGENT = "SI206Project/1.0 (your_email@umich.edu)"
 BASE_URL = "https://api.open-meteo.com/v1/forecast"
-LATITUDE = 52.52       
-LONGITUDE = 13.41
-FORECAST_DAYS = 7     
+FORECAST_DAYS = 7
 HOURLY_PARAMS = "temperature_2m"
 MAX_NEW_ROWS_PER_RUN = 25
 ANALYSIS_OUTPUT_FILE = "analysis_results.txt"
+BACKUP_JSON_FILE = "db_backup.json"
+
+LOCATIONS = [
+    ("Berlin", 52.52, 13.41),
+    ("New York", 40.71, -74.01),
+    ("Tokyo", 35.68, 139.69),
+    ("Sydney", -33.87, 151.21),
+    ("São Paulo", -23.55, -46.63),
+]
 
 def create_tables():
     conn = sqlite3.connect(DB_NAME)
@@ -42,13 +49,11 @@ def create_tables():
 def get_or_create_location(latitude, longitude, city_name="Unknown"):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
     cur.execute("""
         SELECT id FROM locations
         WHERE latitude = ? AND longitude = ?
     """, (latitude, longitude))
     row = cur.fetchone()
-
     if row:
         location_id = row[0]
     else:
@@ -58,28 +63,25 @@ def get_or_create_location(latitude, longitude, city_name="Unknown"):
         """, (city_name, latitude, longitude))
         conn.commit()
         location_id = cur.lastrowid
-
     conn.close()
     return location_id
 
-
-def fetch_weather_data(latitude, longitude, days=7):
-    print(f"Retreiving weather data for lat={latitude}, lon={longitude}")
+def retrieve_weather_data(latitude, longitude, days=7):
+    print(f"Retrieving weather data for lat={latitude}, lon={longitude}")
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "hourly": HOURLY_PARAMS, 
+        "hourly": HOURLY_PARAMS,
         "forecast_days": days,
         "timezone": "UTC"
     }
     headers = {"User-Agent": USER_AGENT}
-
     try:
         response = requests.get(BASE_URL, params=params, headers=headers, timeout=10)
         response.raise_for_status()
         return response.json()
     except Exception as e:
-        print(f"Error fetching data: {e}")
+        print(f"Error retrieving data: {e}")
         return None
 
 def extract_hourly_info(data):
@@ -95,16 +97,13 @@ def extract_hourly_info(data):
             "time": record_time,
             "temperature_2m": record_temp
         })
-
     return hourly_records
 
 def store_hourly_data(location_id, hourly_data):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
     inserted_count = 0
     allowed_rows = MAX_NEW_ROWS_PER_RUN
-
     for record in hourly_data:
         if inserted_count >= allowed_rows:
             break
@@ -115,17 +114,14 @@ def store_hourly_data(location_id, hourly_data):
                 INSERT OR IGNORE INTO hourly_data (location_id, time, temperature_2m)
                 VALUES (?, ?, ?)
             """, (location_id, time_val, temp_val))
-
             if cur.rowcount == 1:
                 inserted_count += 1
         except sqlite3.Error as e:
             print(f"SQLite error inserting {record}: {e}")
             continue
-
     conn.commit()
     conn.close()
     return inserted_count
-
 
 def load_joined_data():
     conn = sqlite3.connect(DB_NAME)
@@ -141,6 +137,19 @@ def load_joined_data():
     conn.close()
     return results
 
+def backup_db_to_json(filename):
+    data = load_joined_data()
+    backup_list = []
+    for city, time_str, temp in data:
+        backup_list.append({
+            "city_name": city,
+            "time": time_str,
+            "temperature": temp
+        })
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(backup_list, f, indent=4)
+    print(f"Database backup written to '{filename}' with {len(backup_list)} rows.")
+
 def analyze_data(data):
     if not data:
         return (0, {})
@@ -152,22 +161,20 @@ def analyze_data(data):
             total_temp += temp
             count += 1
         dt = datetime.datetime.fromisoformat(time_str)
-        day_idx = dt.weekday()  
+        day_idx = dt.weekday()
         day_of_week_counts[day_idx] += 1
-
-    avg_temp = (total_temp / count) if count > 0 else 0
+    avg_temp = total_temp / count if count > 0 else 0
     return (avg_temp, day_of_week_counts)
 
 def write_analysis_to_file(avg_temp, day_of_week_counts):
     with open(ANALYSIS_OUTPUT_FILE, "w") as f:
         f.write("=== Analysis Results ===\n\n")
         f.write(f"Average Temperature: {avg_temp:.2f} °C\n\n")
-
         f.write("Day-of-Week Frequency (Mon=0 ... Sun=6):\n")
         for dow in range(7):
             f.write(f"  Day {dow}: {day_of_week_counts[dow]} data points\n")
         f.write("\n")
-
+    print(f"Analysis results written to '{ANALYSIS_OUTPUT_FILE}'")
 
 def create_visualizations(data):
     times = []
@@ -178,48 +185,41 @@ def create_visualizations(data):
         temps.append(temp)
     plt.figure()
     plt.plot(times, temps)
-    plt.title("Temperature Over Time")
-    plt.xlabel("Time")
+    plt.title("Temperature Over Time (All Locations Combined)")
+    plt.xlabel("Time (UTC)")
     plt.ylabel("Temperature (°C)")
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.savefig("temperature_over_time.png")
     plt.close()
-
     plt.figure()
-    plt.hist(temps, bins=10)
-    plt.title("Temperature Distribution")
+    plt.hist([t for t in temps if t is not None], bins=10)
+    plt.title("Temperature Distribution (All Locations)")
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Frequency")
     plt.tight_layout()
     plt.savefig("temperature_distribution.png")
     plt.close()
-
+    print("Visualizations saved: 'temperature_over_time.png' and 'temperature_distribution.png'")
 
 def main():
     create_tables()
-
-    location_id = get_or_create_location(LATITUDE, LONGITUDE, "Berlin")
-
-    data = fetch_weather_data(LATITUDE, LONGITUDE, FORECAST_DAYS)
-
-    hourly_info = extract_hourly_info(data)
-    print(f"Retreived {len(hourly_info)} hourly records from Open-Meteo.")
-
-    inserted = store_hourly_data(location_id, hourly_info)
-    print(f"Inserted {inserted} new rows")
-
+    for city_name, lat, lon in LOCATIONS:
+        location_id = get_or_create_location(lat, lon, city_name)
+        data = retrieve_weather_data(lat, lon, FORECAST_DAYS)
+        if not data:
+            print(f"No data returned for {city_name}.\n")
+            continue
+        hourly_info = extract_hourly_info(data)
+        print(f"Received {len(hourly_info)} hourly records for {city_name} from Open-Meteo.")
+        inserted = store_hourly_data(location_id, hourly_info)
+        print(f"Inserted {inserted} new rows for {city_name} (limit {MAX_NEW_ROWS_PER_RUN}).\n")
     joined_data = load_joined_data()
-
-    print(f"Total records in DB: {len(joined_data)}")
-
-
+    print(f"Total records in DB across all locations: {len(joined_data)}")
+    backup_db_to_json(BACKUP_JSON_FILE)
     avg_temp, day_counts = analyze_data(joined_data)
-
     write_analysis_to_file(avg_temp, day_counts)
-
     create_visualizations(joined_data)
-
 
 if __name__ == "__main__":
     main()
