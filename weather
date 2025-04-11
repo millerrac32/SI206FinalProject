@@ -204,14 +204,10 @@ def main():
     data = fetch_weather_data(LATITUDE, LONGITUDE, FORECAST_DAYS)
 
     hourly_info = extract_hourly_info(data)
-    print(f"Fetched {len(hourly_info)} hourly records from Open-Meteo.")
+    print(f"Retreived {len(hourly_info)} hourly records from Open-Meteo.")
 
     inserted = store_hourly_data(location_id, hourly_info)
     print(f"Inserted {inserted} new rows")
-    if inserted == 0:
-        print("reached the 25-row limit")
-
-    print("\n--- Analysis ---")
 
     joined_data = load_joined_data()
 
