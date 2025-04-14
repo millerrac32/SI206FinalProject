@@ -140,13 +140,20 @@ def populate_database_from_csv(db_name, csv_file="country_details.csv", limit=25
     print(f"Inserted up to {limit} new rows into the database.")
 
 
+#function to interact with rachel's stuff
+#She has a locations table. has city_name, latitude, longitude
+#she also has a daily_data table. which has location_id: Foreign key referencing the locations table.
+    #date: Date of the weather data (e.g., "2015-01-01").
+    #temperature_2m_mean: The mean temperature for that day.
+
+
 
 api_key = "61e19889572de6f647a1b9d9d3d7836e"
 DB_NAME = "open_meteo.db"
 
-# #gets all the available countries the api can interact with, places in a json file, and prints the names of the countries
-# countries = get_countries(api_key)
-# print(countries)
+#gets all the available countries the api can interact with, places in a json file, and prints the names of the countries
+countries = get_countries(api_key)
+print(countries)
     
 # #FUnction to create a csv file with all the countries
 makeCSV()
