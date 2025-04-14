@@ -95,11 +95,18 @@ def extract_daily_info(data):
         })
     return records
 
-def store_daily_data(location_id, daily_data):
+def store_daily_data_with_limit(location_id, daily_data, limit):
+    """
+    Inserts records into the daily_data table for a given location, but
+    stops after 'limit' new records have been inserted.
+    The INSERT OR IGNORE ensures that duplicates are skipped.
+    """
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     insert_count = 0
     for record in daily_data:
+        if insert_count >= limit:
+            break
         date_val = record["date"]
         temp_val = record["temperature_2m_mean"]
         try:
@@ -159,12 +166,21 @@ def write_analysis_to_file(yearly_averages):
 
 def main():
     create_tables()
+    total_inserted = 0
+    MAX_RECORDS_PER_RUN = 25
     for city_name, lat, lon in LOCATIONS:
+        if total_inserted >= MAX_RECORDS_PER_RUN:
+            break
         loc_id = get_or_create_location(lat, lon, city_name)
         data = retrieve_yearly_data(lat, lon, START_DATE, END_DATE)
         if not data:
             continue
-    
+        daily_info = extract_daily_info(data)
+        remaining_limit = MAX_RECORDS_PER_RUN - total_inserted
+        inserted = store_daily_data_with_limit(loc_id, daily_info, limit=remaining_limit)
+        total_inserted += inserted
+        print(f"Inserted {inserted} records for {city_name}.")
+    print(f"Total new records inserted this run: {total_inserted}")
     joined_data = load_joined_data()
     yearly_averages = analyze_data_by_year(joined_data)
     write_analysis_to_file(yearly_averages)
