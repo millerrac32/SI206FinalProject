@@ -9,13 +9,13 @@ import random
 import datetime
 
 # Run weather.py
-#subprocess.run(["python3", "weather.py"])
+subprocess.run(["python3", "weather.py"])
 
 # Run pop.py
-#subprocess.run(["python3", "populationAPI/pop.py"])
+subprocess.run(["python3", "populationAPI/pop.py"])
 
 # Run movie.py
-#subprocess.run(["python3", "movie.py"])
+subprocess.run(["python3", "movie.py"])
 
 
 #function to interact with rachel's stuff
