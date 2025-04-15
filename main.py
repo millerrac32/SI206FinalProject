@@ -51,29 +51,6 @@ plt.ylabel('Average Temperature (°C)')
 plt.grid(True)
 plt.show()
 
-# 2. Graph: Average temperature over years for a specific capital city (e.g., Berlin)
-query2 = """
-SELECT y.year, AVG(y.avg_temp) as avg_temp
-FROM yearly_data y
-JOIN locations l ON y.location_id = l.id
-WHERE l.city_name = 'Berlin'
-plt.show(block=True)
-ORDER BY y.year
-"""
-cursor.execute(query2)
-data2 = cursor.fetchall()
-
-years = [row[0] for row in data2]
-avg_temps_berlin = [row[1] for row in data2]
-
-plt.figure(figsize=(10, 6))
-plt.plot(years, avg_temps_berlin, marker='o', color='green')
-plt.title('Average Temperature Over Years for Berlin')
-plt.xlabel('Year')
-plt.ylabel('Average Temperature (°C)')
-plt.grid(True)
-plt.show()
-
 # 3. Graph: Latitude vs Average Temperature for all locations
 query3 = """
 SELECT l.latitude, AVG(y.avg_temp) as avg_temp
