@@ -72,5 +72,6 @@ plt.ylabel('Average Temperature (°C)')
 plt.grid(True)
 plt.show()
 
+
 # Close the database connection
 conn.close()

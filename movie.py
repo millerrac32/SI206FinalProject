@@ -3,15 +3,11 @@ import sqlite3
 import time
 import csv
 import pandas as pd
-import plotly.express as px
 import re
-
-
-#
 
 API_KEY = 'ca731278'
 BASE_URL = 'http://www.omdbapi.com/'
-DB_NAME = "test13.db"
+DB_NAME = "ok.db"
 
 MOVIE_TITLES = [
     "The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction",
@@ -41,8 +37,6 @@ MOVIE_TITLES = [
 def create_table():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
-    # Only create the table if it doesn't already exist
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Movies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,37 +45,30 @@ def create_table():
             genres TEXT
         )
     ''')
-
     conn.commit()
     conn.close()
 
 def add_year_column():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
-    # Try to add the 'year' column if it doesn't exist
     try:
         cur.execute("ALTER TABLE Movies ADD COLUMN year TEXT")
         print("'year' column added to Movies table.")
     except sqlite3.OperationalError:
         print("'year' column already exists.")
-    
     conn.commit()
     conn.close()
-
 
 def patch_missing_years():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
-    # Find movies with no year info
     cur.execute("SELECT title FROM Movies WHERE year IS NULL OR year = '' OR year = 'N/A'")
     missing = [row[0] for row in cur.fetchall()]
     conn.close()
 
     print(f"Found {len(missing)} movies missing year.")
 
-    for title in missing[:25]:  # Still respect the 25-per-run rule
+    for title in missing[:25]:  
         print(f"Fetching year for: {title}")
         data = fetch_movie_data(title)
         if data and data.get("Response") == "True":
@@ -95,7 +82,6 @@ def patch_missing_years():
         else:
             print(f"Could not fetch: {title}")
         time.sleep(1)
-
 
 def fetch_movie_data(title):
     params = {
@@ -125,7 +111,6 @@ def store_movie_data(movie_data):
         ''', (title, box_office, genres, year))
         print(f"Stored: {title} ({year})")
     except sqlite3.IntegrityError:
-        # Already exists — update year
         cur.execute('''
             UPDATE Movies SET year = ? WHERE title = ?
         ''', (year, title))
@@ -136,106 +121,21 @@ def store_movie_data(movie_data):
 def export_movies_to_csv(filename="movies_export.csv"):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
-    # Get all movies
     cur.execute("SELECT title, box_office, genres, year FROM Movies ORDER BY title")
     rows = cur.fetchall()
-
-    # Write to CSV
     with open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        # Write header row
         writer.writerow(["Title", "Box Office", "Genres", "Year"])
-        # Write data rows
         for row in rows:
             writer.writerow(row)
-
     conn.close()
     print(f"Exported {len(rows)} movies to {filename}")
 
-
-# Load your data
-movie_df = pd.read_csv("movies_export.csv")
-
-def clean_box_office(value):
-    if isinstance(value, str):
-        cleaned = re.sub(r'[^\d.]', '', value)
-        return int(cleaned) if cleaned.isdigit() else None
-    return None
-
-movie_df['Box Office Cleaned'] = movie_df['Box Office'].apply(clean_box_office)
-movie_df['Year'] = pd.to_numeric(movie_df['Year'], errors='coerce')
-box_office_by_year = movie_df.groupby('Year')['Box Office Cleaned'].mean().dropna().reset_index()
-box_office_by_year.columns = ['Year', 'Average Box Office']
-
-# Parse LA temp data
-la_yearly_temp = {}
-with open("analysis_results_yearly.txt", "r", encoding="utf-8") as f:
-    lines = f.readlines()
-
-in_la = False
-for line in lines:
-    if "City: Los Angeles" in line:
-        in_la = True
-        continue
-    if in_la:
-        if line.startswith("City:"):
-            break
-        match = re.match(r"(\d{4}): ([\d.]+) °C", line.strip())
-        if match:
-            la_yearly_temp[int(match.group(1))] = float(match.group(2))
-
-temp_df = pd.DataFrame(list(la_yearly_temp.items()), columns=['Year', 'Average Temperature'])
-
-# Merge and plot
-merged_df = pd.merge(temp_df, box_office_by_year, on='Year')
-fig = px.scatter(
-    merged_df,
-    x='Average Temperature',
-    y='Average Box Office',
-    title='LA Avg Temp vs Movie Box Office',
-    hover_name='Year',
-    trendline='ols'
-)
-fig.show()
-
-# Save the plot as a PNG image
-fig.write_image("la_temp_vs_box_office.png")
-print("Plot saved as 'la_temp_vs_box_office.png'.")
-
-
-def main():
-    create_table()
-
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-    cur.execute('SELECT title FROM Movies')
-    stored_titles = set(row[0] for row in cur.fetchall())
-    conn.close()
-
-    # Filter out movies that are already in the DB
-    remaining_titles = [title for title in MOVIE_TITLES if title not in stored_titles]
-
-    # Limit to 25 new attempts per run
-    to_process = remaining_titles[:25]
-
-    print(f"🎬 Attempting to process {len(to_process)} movies...")
-
-    for title in to_process:
-        print(f"Fetching: {title}")
-        data = fetch_movie_data(title)
-        if data and data.get("Response") == "True":
-            store_movie_data(data)
-        else:
-            print(f"Failed to fetch or bad response for: {title}")
-        time.sleep(1)
 def export_movies_to_txt(filename="movies_export.txt"):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
     cur.execute("SELECT title, box_office, genres, year FROM Movies ORDER BY title")
     rows = cur.fetchall()
-
     with open(filename, "w", encoding="utf-8") as f:
         f.write("🎬 Movie Database Export\n")
         f.write("====================================\n")
@@ -246,15 +146,37 @@ def export_movies_to_txt(filename="movies_export.txt"):
             f.write(f"Genres: {genres}\n")
             f.write(f"Year: {year}\n")
             f.write("------------------------------------\n")
-
     conn.close()
     print(f"Movie data exported to {filename}")
 
+def main():
+    create_table()
 
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    cur.execute('SELECT title FROM Movies')
+    stored_titles = set(row[0] for row in cur.fetchall())
+    conn.close()
+
+    remaining_titles = [title for title in MOVIE_TITLES if title not in stored_titles]
+    to_process = remaining_titles[:25]
+
+    print(f"🎬 Attempting to process {len(to_process)} movies...")
+    for title in to_process:
+        print(f"Fetching: {title}")
+        data = fetch_movie_data(title)
+        if data and data.get("Response") == "True":
+            store_movie_data(data)
+        else:
+            print(f"Failed to fetch or bad response for: {title}")
+        time.sleep(1)
 
 if __name__ == '__main__':
     create_table()
     add_year_column()
+    
+    main()    
+
     patch_missing_years()
     export_movies_to_txt()
     export_movies_to_csv()
