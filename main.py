@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 # Paris: 
 # Tokyo: 
 
-DB_NAME = "test13.db"
+DB_NAME = "test30.db"
 
 #COUNTRIES INFORMATION
 #Table: countries
@@ -21,6 +21,10 @@ DB_NAME = "test13.db"
 # Columns: id, location_id, year, avg_temp
 #Table: locations
 # Columns: id, city_name, latitude, longitude
+
+#This whole data is from los angeles
+#Table: Movies
+# Columns: id, title, box_office, genres, year
 
 # Connect to the SQLite database
 conn = sqlite3.connect(DB_NAME)
@@ -71,6 +75,29 @@ plt.xlabel('Latitude')
 plt.ylabel('Average Temperature (°C)')
 plt.grid(True)
 plt.show()
+
+
+# 4. Graph: Average Box Office vs Average Temperature in Los Angeles (2013-2022)
+query4 = """
+SELECT AVG(m.box_office) as avg_box_office, AVG(y.avg_temp) as avg_temp
+FROM movies m
+JOIN locations l ON l.city_name = 'Los Angeles'
+JOIN yearly_data y ON l.id = y.location_id
+WHERE m.year BETWEEN 2013 AND 2022 AND y.year = m.year
+"""
+cursor.execute(query4)
+data4 = cursor.fetchone()
+
+avg_box_office = data4[0]
+avg_temp_la = data4[1]
+
+plt.figure(figsize=(10, 6))
+plt.bar(['Average Box Office', 'Average Temperature (°C)'], [avg_box_office, avg_temp_la], color=['green', 'orange'])
+plt.title('Average Box Office vs Average Temperature in Los Angeles (2013-2022)')
+plt.ylabel('Value')
+plt.grid(axis='y')
+plt.show()
+
 
 
 # Close the database connection

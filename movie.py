@@ -7,7 +7,7 @@ import re
 
 API_KEY = 'ca731278'
 BASE_URL = 'http://www.omdbapi.com/'
-DB_NAME = "ok.db"
+DB_NAME = "test30.db"
 
 MOVIE_TITLES = [
     "The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction",

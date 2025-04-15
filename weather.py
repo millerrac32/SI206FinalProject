@@ -4,7 +4,7 @@ import sqlite3
 import csv
 import datetime
 
-DB_NAME = "test13.db"
+DB_NAME = "test30.db"
 USER_AGENT = "SI206Project/1.0 (your_email@umich.edu)"
 ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/era5"
 

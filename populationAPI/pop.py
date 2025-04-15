@@ -5,7 +5,7 @@ import csv
 import os
 import sqlite3
 
-DB_NAME = "test13.db"
+DB_NAME = "test30.db"
 
 # Fetch the list of countries from the CountryLayer API
 def get_countries(api_key):
