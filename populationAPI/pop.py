@@ -153,7 +153,7 @@ DB_NAME = "open_meteo.db"
 
 #gets all the available countries the api can interact with, places in a json file, and prints the names of the countries
 countries = get_countries(api_key)
-print(countries)
+#print(countries)
     
 # #FUnction to create a csv file with all the countries
 makeCSV()

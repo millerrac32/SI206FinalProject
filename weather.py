@@ -1,8 +1,9 @@
 import requests
 import sqlite3
-import os
+import csv
+import datetime
 
-DB_NAME = "open_meteo_yearly.db"
+DB_NAME = "test10.db"
 USER_AGENT = "SI206Project/1.0 (your_email@umich.edu)"
 ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/era5"
 
@@ -16,14 +17,15 @@ LOCATIONS = [
     ("Paris", 48.86, 2.35),
     ("Moscow", 55.75, 37.62),
     ("Delhi", 28.66, 77.23),
-    ("Beijing", 39.91, 116.41),
     ("Los Angeles", 34.05, -118.25)
 ]
 
-START_DATE = "2015-01-01"
+START_DATE = "2013-01-01"
 END_DATE = "2022-12-31"
 DAILY_PARAMS = "temperature_2m_mean"
 ANALYSIS_OUTPUT_FILE = "analysis_results_yearly.txt"
+CSV_FILE = "yearly_data.csv"
+MAX_INSERTS_PER_RUN = 36500
 
 def create_tables():
     conn = sqlite3.connect(DB_NAME)
@@ -34,16 +36,6 @@ def create_tables():
             city_name TEXT,
             latitude REAL NOT NULL,
             longitude REAL NOT NULL
-        );
-    """)
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS daily_data (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            location_id INTEGER NOT NULL,
-            date TEXT NOT NULL,
-            temperature_2m_mean REAL,
-            FOREIGN KEY (location_id) REFERENCES locations(id),
-            UNIQUE(location_id, date)
         );
     """)
     conn.commit()
@@ -78,8 +70,7 @@ def retrieve_yearly_data(latitude, longitude, start_date, end_date):
         r = requests.get(ARCHIVE_URL, params=params, headers=headers, timeout=15)
         r.raise_for_status()
         return r.json()
-    except Exception as e:
-        print(f"Error retrieving data for {latitude}, {longitude}: {e}")
+    except:
         return None
 
 def extract_daily_info(data):
@@ -95,96 +86,117 @@ def extract_daily_info(data):
         })
     return records
 
-def store_daily_data_with_limit(location_id, daily_data, limit):
-    """
-    Inserts records into the daily_data table for a given location, but
-    stops after 'limit' new records have been inserted.
-    The INSERT OR IGNORE ensures that duplicates are skipped.
-    """
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-    insert_count = 0
+def write_to_csv(city_name, daily_data):
+    # Aggregate daily data into yearly averages
+    yearly_data = {}
     for record in daily_data:
-        if insert_count >= limit:
-            break
-        date_val = record["date"]
-        temp_val = record["temperature_2m_mean"]
-        try:
-            cur.execute("""
-                INSERT OR IGNORE INTO daily_data (location_id, date, temperature_2m_mean)
-                VALUES (?, ?, ?)
-            """, (location_id, date_val, temp_val))
-            if cur.rowcount == 1:
-                insert_count += 1
-        except Exception as e:
-            print(f"Error inserting record {record}: {e}")
-    conn.commit()
-    conn.close()
-    return insert_count
+        date = record["date"]
+        temperature = record["temperature_2m_mean"]
+        if not temperature:  # Skip if temperature is None
+            continue
+        year = date[:4]  # Extract "YYYY" from the date
+        if year not in yearly_data:
+            yearly_data[year] = {"total_temp": 0, "count": 0}
+        yearly_data[year]["total_temp"] += temperature
+        yearly_data[year]["count"] += 1
 
-def load_joined_data():
+    # Calculate yearly averages
+    yearly_averages = [
+        {"year": year, "avg_temp": round(data["total_temp"] / data["count"], 2)}
+        for year, data in yearly_data.items()
+    ]
+
+    # Write yearly averages to the CSV file
+    with open(CSV_FILE, mode="a", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        for record in yearly_averages:
+            writer.writerow([city_name, record["year"], record["avg_temp"]])
+            
+def analyze_data_from_csv():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("""
-        SELECT L.city_name, D.date, D.temperature_2m_mean
-        FROM daily_data AS D
-        JOIN locations AS L
-        ON D.location_id = L.id
-        ORDER BY L.city_name, D.date
-    """)
-    rows = cur.fetchall()
-    conn.close()
-    return rows
-
-def analyze_data_by_year(data):
-    if not data:
-        return {}
-    city_year_temps = {}
-    for city, date_str, temp in data:
-        year = date_str.split("-")[0]
-        city_year_temps.setdefault(city, {}).setdefault(year, []).append(temp)
     
-    city_year_avgs = {}
-    for city, year_dict in city_year_temps.items():
-        city_year_avgs[city] = {}
-        for year, temps in year_dict.items():
-            if temps:
-                city_year_avgs[city][year] = sum(temps) / len(temps)
-            else:
-                city_year_avgs[city][year] = None
-    return city_year_avgs
+    # Create the yearly_data table if it doesn't exist
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS yearly_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            location_id INTEGER NOT NULL,
+            year TEXT NOT NULL,
+            avg_temp REAL NOT NULL,
+            FOREIGN KEY (location_id) REFERENCES locations (id)
+        );
+    """)
+    conn.commit()
+
+    city_yearly_data = {}
+    with open(CSV_FILE, mode="r") as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # Skip the header row
+        for row in reader:
+            city, year, temp = row
+            temp = float(temp) if temp else None
+            if temp is not None:
+                # Get the location_id for the city
+                cur.execute("SELECT id FROM locations WHERE city_name = ?", (city,))
+                location_id = cur.fetchone()
+                if location_id:
+                    location_id = location_id[0]
+                    # Insert the data into the yearly_data table
+                    cur.execute("""
+                        INSERT INTO yearly_data (location_id, year, avg_temp)
+                        VALUES (?, ?, ?)
+                    """, (location_id, year, temp))
+                    conn.commit()
+
+                # Add to city_yearly_data for analysis
+                if city not in city_yearly_data:
+                    city_yearly_data[city] = []
+                city_yearly_data[city].append((year, temp))
+    
+    conn.close()
+    return city_yearly_data
 
 def write_analysis_to_file(yearly_averages):
     with open(ANALYSIS_OUTPUT_FILE, "w") as f:
-        f.write("Yearly Average Temperature by City and Year\n\n")
+        f.write("Yearly Average Temperature\n\n")
         for city in sorted(yearly_averages.keys()):
-            f.write(f"City: {city}\n")
-            for year in sorted(yearly_averages[city].keys()):
-                avg = yearly_averages[city][year]
-                f.write(f"  {year}: {avg:.2f} °C\n")
-            f.write("\n")
+            f.write(f"{city}: {yearly_averages[city]:.2f} °C\n")
 
 def main():
     create_tables()
-    total_inserted = 0
-    MAX_RECORDS_PER_RUN = 25
+    # Initialize CSV file with headers
+    with open(CSV_FILE, mode="w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["City", "Year", "Temperature (°C)"])  # Updated header
+
+    total_inserts_this_run = 0
     for city_name, lat, lon in LOCATIONS:
-        if total_inserted >= MAX_RECORDS_PER_RUN:
+        if total_inserts_this_run >= MAX_INSERTS_PER_RUN:
             break
         loc_id = get_or_create_location(lat, lon, city_name)
         data = retrieve_yearly_data(lat, lon, START_DATE, END_DATE)
         if not data:
             continue
         daily_info = extract_daily_info(data)
-        remaining_limit = MAX_RECORDS_PER_RUN - total_inserted
-        inserted = store_daily_data_with_limit(loc_id, daily_info, limit=remaining_limit)
-        total_inserted += inserted
-        print(f"Inserted {inserted} records for {city_name}.")
-    print(f"Total new records inserted this run: {total_inserted}")
-    joined_data = load_joined_data()
-    yearly_averages = analyze_data_by_year(joined_data)
+        remaining_inserts = MAX_INSERTS_PER_RUN - total_inserts_this_run
+        daily_info = daily_info[:remaining_inserts]
+        write_to_csv(city_name, daily_info)
+        
+        total_inserts_this_run += len(daily_info)
+
+    # Analyze the data from the CSV file
+    # and write the results to a text file
+    city_yearly_data = analyze_data_from_csv()
+    yearly_averages = {
+        city: sum(temp for _, temp in data) / len(data)
+        for city, data in city_yearly_data.items()
+    }
+    
     write_analysis_to_file(yearly_averages)
-    print(f"Analysis written to {ANALYSIS_OUTPUT_FILE}")
+    
+    
+    
+    
 
 if __name__ == "__main__":
     main()

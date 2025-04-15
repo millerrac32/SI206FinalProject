@@ -1,0 +1,12 @@
+Yearly Average Temperature
+
+Berlin: 10.70 °C
+Delhi: 24.32 °C
+London: 11.10 °C
+Los Angeles: 18.38 °C
+Moscow: 6.31 °C
+New York: 12.15 °C
+Paris: 12.16 °C
+Sydney: 17.43 °C
+São Paulo: 19.64 °C
+Tokyo: 15.18 °C

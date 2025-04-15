@@ -1,0 +1,101 @@
+City,Year,Temperature (°C)
+Berlin,2013,9.43
+Berlin,2014,11.08
+Berlin,2015,10.92
+Berlin,2016,10.46
+Berlin,2017,10.03
+Berlin,2018,11.3
+Berlin,2019,11.51
+Berlin,2020,11.36
+Berlin,2021,9.87
+Berlin,2022,11.05
+New York,2013,11.62
+New York,2014,10.86
+New York,2015,11.78
+New York,2016,12.64
+New York,2017,12.39
+New York,2018,12.06
+New York,2019,12.08
+New York,2020,12.85
+New York,2021,12.74
+New York,2022,12.45
+Tokyo,2013,15.13
+Tokyo,2014,14.63
+Tokyo,2015,15.17
+Tokyo,2016,15.32
+Tokyo,2017,14.7
+Tokyo,2018,15.49
+Tokyo,2019,15.25
+Tokyo,2020,15.39
+Tokyo,2021,15.4
+Tokyo,2022,15.29
+Sydney,2013,17.82
+Sydney,2014,17.79
+Sydney,2015,17.61
+Sydney,2016,18.17
+Sydney,2017,17.58
+Sydney,2018,17.33
+Sydney,2019,17.61
+Sydney,2020,17.09
+Sydney,2021,16.54
+Sydney,2022,16.72
+São Paulo,2013,19.24
+São Paulo,2014,20.24
+São Paulo,2015,20.46
+São Paulo,2016,19.65
+São Paulo,2017,19.59
+São Paulo,2018,19.51
+São Paulo,2019,20.02
+São Paulo,2020,19.57
+São Paulo,2021,19.17
+São Paulo,2022,18.99
+London,2013,9.9
+London,2014,11.46
+London,2015,10.93
+London,2016,10.83
+London,2017,11.17
+London,2018,11.42
+London,2019,11.05
+London,2020,11.61
+London,2021,10.73
+London,2022,11.91
+Paris,2013,11.05
+Paris,2014,12.16
+Paris,2015,12.15
+Paris,2016,11.68
+Paris,2017,12.09
+Paris,2018,12.66
+Paris,2019,12.3
+Paris,2020,13.13
+Paris,2021,11.49
+Paris,2022,12.93
+Moscow,2013,5.92
+Moscow,2014,6.41
+Moscow,2015,6.75
+Moscow,2016,5.93
+Moscow,2017,5.61
+Moscow,2018,5.84
+Moscow,2019,7.2
+Moscow,2020,7.6
+Moscow,2021,5.72
+Moscow,2022,6.12
+Delhi,2013,23.83
+Delhi,2014,24.46
+Delhi,2015,24.28
+Delhi,2016,25.05
+Delhi,2017,24.6
+Delhi,2018,24.33
+Delhi,2019,24.1
+Delhi,2020,23.69
+Delhi,2021,24.19
+Delhi,2022,24.62
+Los Angeles,2013,18.27
+Los Angeles,2014,19.49
+Los Angeles,2015,19.28
+Los Angeles,2016,18.82
+Los Angeles,2017,18.52
+Los Angeles,2018,18.12
+Los Angeles,2019,17.04
+Los Angeles,2020,18.3
+Los Angeles,2021,17.56
+Los Angeles,2022,18.36
