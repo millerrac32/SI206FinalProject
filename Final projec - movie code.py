@@ -11,7 +11,7 @@ import re
 
 API_KEY = 'ca731278'
 BASE_URL = 'http://www.omdbapi.com/'
-DB_NAME = "movies.db"
+DB_NAME = "test13.db"
 
 MOVIE_TITLES = [
     "The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction",
@@ -199,7 +199,9 @@ fig = px.scatter(
 )
 fig.show()
 
-
+# Save the plot as a PNG image
+fig.write_image("la_temp_vs_box_office.png")
+print("Plot saved as 'la_temp_vs_box_office.png'.")
 
 
 def main():

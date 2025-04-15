@@ -5,6 +5,8 @@ import csv
 import os
 import sqlite3
 
+DB_NAME = "test13.db"
+
 # Fetch the list of countries from the CountryLayer API
 def get_countries(api_key):
     url = "https://api.countrylayer.com/v2/all"
@@ -149,7 +151,7 @@ def populate_database_from_csv(db_name, csv_file="country_details.csv", limit=25
 
 
 api_key = "61e19889572de6f647a1b9d9d3d7836e"
-DB_NAME = "open_meteo.db"
+
 
 #gets all the available countries the api can interact with, places in a json file, and prints the names of the countries
 countries = get_countries(api_key)
