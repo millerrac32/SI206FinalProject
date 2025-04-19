@@ -1,0 +1,13 @@
+Follow these in order. Following them out of order will result in problems. 
+To open terminal do "control ~" at the same time on your keyboard
+Make sure directory is SI206FinalProject
+Delete all old data bases from directory
+DO NOT TRY TO RUN ANYTHING USING THE IDE. IT WILL MESS EVERYTHING UP.
+run "python3 movie.py" on terminal until it prints that it has exported 103 movies. This will be printed on the terminal (should be about 4-6 times)
+delete a file called "line.txt" from the SI206FinalProject directory
+Run "python3 weather.py" exactly 4 times
+Change directory to "populationAPI" on the terminal
+run "python3 pop.py" on the terminal multiple times until it has inserted 250 rows into the database. It will print messages to tell you when its done.
+change directory back to   SI206FinalProject
+run main.py on terminal
+Graphs will appear on the screen one by one. For a total of 5 graphs.

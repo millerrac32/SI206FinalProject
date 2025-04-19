@@ -1,517 +1,414 @@
 🎬 Movie Database Export
 ====================================
 Title: A Star Is Born
-Box Office: $215,333,122
-Genres: Drama, Music, Romance
+Box Office: 215333122
 Year: 2018
 ------------------------------------
 Title: Aladdin
-Box Office: $217,350,219
-Genres: Animation, Adventure, Comedy
+Box Office: 217350219
 Year: 1992
 ------------------------------------
 Title: Ant-Man
-Box Office: $180,202,163
-Genres: Action, Comedy, Sci-Fi
+Box Office: 180202163
 Year: 2015
 ------------------------------------
 Title: Avengers: Endgame
-Box Office: $858,373,000
-Genres: Action, Adventure, Sci-Fi
+Box Office: 858373000
 Year: 2019
 ------------------------------------
 Title: Avengers: Infinity War
-Box Office: $678,815,482
-Genres: Action, Adventure, Sci-Fi
+Box Office: 678815482
 Year: 2018
 ------------------------------------
 Title: Beauty and the Beast
-Box Office: $218,967,620
-Genres: Animation, Family, Fantasy
+Box Office: 218967620
 Year: 1991
 ------------------------------------
 Title: Big Hero 6
-Box Office: $222,527,828
-Genres: Animation, Action, Adventure
+Box Office: 222527828
 Year: 2014
 ------------------------------------
 Title: Black Panther
-Box Office: $700,426,566
-Genres: Action, Adventure, Sci-Fi
+Box Office: 700426566
 Year: 2018
 ------------------------------------
 Title: Bohemian Rhapsody
-Box Office: $216,668,042
-Genres: Biography, Drama, Music
+Box Office: 216668042
 Year: 2018
 ------------------------------------
 Title: Brave
-Box Office: $237,283,207
-Genres: Animation, Action, Adventure
+Box Office: 237283207
 Year: 2012
 ------------------------------------
 Title: Captain America: Civil War
-Box Office: $408,084,349
-Genres: Action, Sci-Fi
+Box Office: 408084349
 Year: 2016
 ------------------------------------
 Title: Captain Marvel
-Box Office: $426,829,839
-Genres: Action, Adventure, Sci-Fi
+Box Office: 426829839
 Year: 2019
 ------------------------------------
 Title: Cars
-Box Office: $244,082,982
-Genres: Animation, Adventure, Comedy
+Box Office: 244082982
 Year: 2006
 ------------------------------------
 Title: Cinderella
-Box Office: $201,151,353
-Genres: Adventure, Drama, Family
+Box Office: 201151353
 Year: 2015
 ------------------------------------
 Title: Coco
-Box Office: $210,460,015
-Genres: Animation, Adventure, Drama
+Box Office: 210460015
 Year: 2017
 ------------------------------------
 Title: Deadpool
-Box Office: $363,070,709
-Genres: Action, Comedy, Sci-Fi
+Box Office: 363070709
 Year: 2016
 ------------------------------------
 Title: Despicable Me
-Box Office: $251,683,815
-Genres: Animation, Adventure, Comedy
+Box Office: 251683815
 Year: 2010
 ------------------------------------
 Title: Divergent
-Box Office: $150,947,895
-Genres: Action, Adventure, Drama
+Box Office: 150947895
 Year: 2014
 ------------------------------------
 Title: Django Unchained
-Box Office: $162,805,434
-Genres: Comedy, Drama, Western
+Box Office: 162805434
 Year: 2012
 ------------------------------------
 Title: Doctor Strange
-Box Office: $232,641,920
-Genres: Action, Adventure, Fantasy
+Box Office: 232641920
 Year: 2016
 ------------------------------------
 Title: Eclipse
-Box Office: N/A
-Genres: Action, Drama, History
+Box Office: None
 Year: 2021–
 ------------------------------------
 Title: Elvis
-Box Office: $151,040,048
-Genres: Biography, Drama, Music
+Box Office: 151040048
 Year: 2022
 ------------------------------------
 Title: Encanto
-Box Office: $96,093,622
-Genres: Animation, Comedy, Family
+Box Office: 96093622
 Year: 2021
 ------------------------------------
 Title: Fantastic Beasts and Where to Find Them
-Box Office: $234,037,575
-Genres: Adventure, Family, Fantasy
+Box Office: 234037575
 Year: 2016
 ------------------------------------
 Title: Fight Club
-Box Office: $37,030,102
-Genres: Drama
+Box Office: 37030102
 Year: 1999
 ------------------------------------
 Title: Finding Nemo
-Box Office: $380,843,261
-Genres: Animation, Adventure, Comedy
+Box Office: 380843261
 Year: 2003
 ------------------------------------
 Title: Forrest Gump
-Box Office: $330,455,270
-Genres: Drama, Romance
+Box Office: 330455270
 Year: 1994
 ------------------------------------
 Title: Frozen
-Box Office: $400,953,009
-Genres: Animation, Adventure, Comedy
+Box Office: 400953009
 Year: 2013
 ------------------------------------
 Title: Frozen Fever
-Box Office: N/A
-Genres: Animation, Short, Adventure
+Box Office: None
 Year: 2015
 ------------------------------------
 Title: Frozen II
-Box Office: $477,373,578
-Genres: Animation, Adventure, Comedy
+Box Office: 477373578
 Year: 2019
 ------------------------------------
 Title: Gladiator
-Box Office: $187,705,427
-Genres: Action, Adventure, Drama
+Box Office: 187705427
 Year: 2000
 ------------------------------------
 Title: Guardians of the Galaxy
-Box Office: $333,718,600
-Genres: Action, Adventure, Comedy
+Box Office: 333718600
 Year: 2014
 ------------------------------------
 Title: Hamilton
-Box Office: N/A
-Genres: Biography, Drama, History
+Box Office: None
 Year: 2020
 ------------------------------------
 Title: Harry Potter and the Deathly Hallows: Part 2
-Box Office: $381,447,587
-Genres: Adventure, Family, Fantasy
+Box Office: 381447587
 Year: 2011
 ------------------------------------
 Title: Harry Potter and the Prisoner of Azkaban
-Box Office: $250,105,651
-Genres: Adventure, Family, Fantasy
+Box Office: 250105651
 Year: 2004
 ------------------------------------
 Title: Harry Potter and the Sorcerer's Stone
-Box Office: $318,886,962
-Genres: Adventure, Family, Fantasy
+Box Office: 318886962
 Year: 2001
 ------------------------------------
 Title: Hercules
-Box Office: $99,112,101
-Genres: Animation, Action, Adventure
+Box Office: 99112101
 Year: 1997
 ------------------------------------
 Title: How to Train Your Dragon
-Box Office: $217,581,231
-Genres: Animation, Action, Adventure
+Box Office: 217581231
 Year: 2010
 ------------------------------------
 Title: Inception
-Box Office: $292,587,330
-Genres: Action, Adventure, Sci-Fi
+Box Office: 292587330
 Year: 2010
 ------------------------------------
 Title: Inside Out
-Box Office: $356,461,711
-Genres: Animation, Adventure, Comedy
+Box Office: 356461711
 Year: 2015
 ------------------------------------
 Title: Interstellar
-Box Office: $203,227,580
-Genres: Adventure, Drama, Sci-Fi
+Box Office: 203227580
 Year: 2014
 ------------------------------------
 Title: Iron Man
-Box Office: $319,034,126
-Genres: Action, Adventure, Sci-Fi
+Box Office: 319034126
 Year: 2008
 ------------------------------------
 Title: Joker
-Box Office: $335,477,657
-Genres: Crime, Drama, Thriller
+Box Office: 335477657
 Year: 2019
 ------------------------------------
 Title: Kung Fu Panda
-Box Office: $216,064,546
-Genres: Animation, Action, Adventure
+Box Office: 216064546
 Year: 2008
 ------------------------------------
 Title: La La Land
-Box Office: $151,101,803
-Genres: Comedy, Drama, Music
+Box Office: 151101803
 Year: 2016
 ------------------------------------
 Title: Les Misérables
-Box Office: $149,260,140
-Genres: Drama, Musical, Romance
+Box Office: 149260140
 Year: 2012
 ------------------------------------
 Title: Logan
-Box Office: $226,277,068
-Genres: Action, Drama, Sci-Fi
+Box Office: 226277068
 Year: 2017
 ------------------------------------
 Title: Luca
-Box Office: $1,324,302
-Genres: Animation, Adventure, Comedy
+Box Office: 1324302
 Year: 2021
 ------------------------------------
 Title: Maleficent
-Box Office: $241,410,378
-Genres: Action, Adventure, Drama
+Box Office: 241410378
 Year: 2014
 ------------------------------------
 Title: Moana
-Box Office: $248,757,044
-Genres: Animation, Adventure, Comedy
+Box Office: 248757044
 Year: 2016
 ------------------------------------
 Title: Monsters, Inc.
-Box Office: $290,642,256
-Genres: Animation, Adventure, Comedy
+Box Office: 290642256
 Year: 2001
 ------------------------------------
 Title: Mulan
-Box Office: $120,620,254
-Genres: Animation, Adventure, Comedy
+Box Office: 120620254
 Year: 1998
 ------------------------------------
 Title: National Treasure
-Box Office: $173,008,894
-Genres: Action, Adventure, Mystery
+Box Office: 173008894
 Year: 2004
 ------------------------------------
 Title: Pirates of the Caribbean: Dead Man's Chest
-Box Office: $423,315,812
-Genres: Action, Adventure, Fantasy
+Box Office: 423315812
 Year: 2006
 ------------------------------------
 Title: Pirates of the Caribbean: The Curse of the Black Pearl
-Box Office: $305,413,918
-Genres: Action, Adventure, Fantasy
+Box Office: 305413918
 Year: 2003
 ------------------------------------
 Title: Pocahontas
-Box Office: $141,579,773
-Genres: Animation, Adventure, Drama
+Box Office: 141579773
 Year: 1995
 ------------------------------------
 Title: Pulp Fiction
-Box Office: $107,928,762
-Genres: Crime, Drama
+Box Office: 107928762
 Year: 1994
 ------------------------------------
 Title: Ratatouille
-Box Office: $206,445,654
-Genres: Animation, Adventure, Comedy
+Box Office: 206445654
 Year: 2007
 ------------------------------------
 Title: Rocketman
-Box Office: $96,368,160
-Genres: Biography, Drama, Music
+Box Office: 96368160
 Year: 2019
 ------------------------------------
 Title: Saving Private Ryan
-Box Office: $217,049,603
-Genres: Drama, War
+Box Office: 217049603
 Year: 1998
 ------------------------------------
 Title: Schindler's List
-Box Office: $96,898,818
-Genres: Biography, Drama, History
+Box Office: 96898818
 Year: 1993
 ------------------------------------
 Title: Se7en
-Box Office: $101,040,643
-Genres: Crime, Drama, Mystery
+Box Office: 101040643
 Year: 1995
 ------------------------------------
 Title: Shrek
-Box Office: $268,698,241
-Genres: Animation, Adventure, Comedy
+Box Office: 268698241
 Year: 2001
 ------------------------------------
 Title: Shrek 2
-Box Office: $444,978,202
-Genres: Animation, Adventure, Comedy
+Box Office: 444978202
 Year: 2004
 ------------------------------------
 Title: Soul
-Box Office: $946,154
-Genres: Animation, Adventure, Comedy
+Box Office: 946154
 Year: 2020
 ------------------------------------
 Title: Spider-Man: No Way Home
-Box Office: $814,866,759
-Genres: Action, Adventure, Fantasy
+Box Office: 814866759
 Year: 2021
 ------------------------------------
 Title: Star Wars: Episode V - The Empire Strikes Back
-Box Office: $292,753,960
-Genres: Action, Adventure, Fantasy
+Box Office: 292753960
 Year: 1980
 ------------------------------------
 Title: Tangled
-Box Office: $200,821,936
-Genres: Animation, Adventure, Comedy
+Box Office: 200821936
 Year: 2010
 ------------------------------------
 Title: Tarzan
-Box Office: $171,091,819
-Genres: Animation, Adventure, Comedy
+Box Office: 171091819
 Year: 1999
 ------------------------------------
 Title: The Batman
-Box Office: $369,345,583
-Genres: Action, Crime, Drama
+Box Office: 369345583
 Year: 2022
 ------------------------------------
 Title: The Chronicles of Narnia: The Lion, the Witch and the Wardrobe
-Box Office: $291,710,957
-Genres: Adventure, Family, Fantasy
+Box Office: 291710957
 Year: 2005
 ------------------------------------
 Title: The Dark Knight
-Box Office: $534,987,076
-Genres: Action, Crime, Drama
+Box Office: 534987076
 Year: 2008
 ------------------------------------
 Title: The Departed
-Box Office: $132,399,394
-Genres: Crime, Drama, Thriller
+Box Office: 132399394
 Year: 2006
 ------------------------------------
 Title: The Fault in Our Stars
-Box Office: $124,872,350
-Genres: Drama, Romance
+Box Office: 124872350
 Year: 2014
 ------------------------------------
 Title: The Godfather
-Box Office: $136,381,073
-Genres: Crime, Drama
+Box Office: 136381073
 Year: 1972
 ------------------------------------
 Title: The Greatest Showman
-Box Office: $174,340,174
-Genres: Biography, Drama, Musical
+Box Office: 174340174
 Year: 2017
 ------------------------------------
 Title: The Green Mile
-Box Office: $136,801,374
-Genres: Crime, Drama, Fantasy
+Box Office: 136801374
 Year: 1999
 ------------------------------------
 Title: The Hunchback of Notre Dame
-Box Office: $100,138,851
-Genres: Animation, Drama, Family
+Box Office: 100138851
 Year: 1996
 ------------------------------------
 Title: The Hunger Games
-Box Office: $408,010,692
-Genres: Action, Adventure, Sci-Fi
+Box Office: 408010692
 Year: 2012
 ------------------------------------
 Title: The Incredibles
-Box Office: $261,441,092
-Genres: Animation, Action, Adventure
+Box Office: 261441092
 Year: 2004
 ------------------------------------
 Title: The Lion King
-Box Office: $424,979,720
-Genres: Animation, Adventure, Drama
+Box Office: 424979720
 Year: 1994
 ------------------------------------
 Title: The Little Mermaid
-Box Office: $111,543,479
-Genres: Animation, Adventure, Family
+Box Office: 111543479
 Year: 1989
 ------------------------------------
 Title: The Lord of the Rings: The Fellowship of the Ring
-Box Office: $319,372,078
-Genres: Adventure, Drama, Fantasy
+Box Office: 319372078
 Year: 2001
 ------------------------------------
 Title: The Lord of the Rings: The Return of the King
-Box Office: $381,878,219
-Genres: Adventure, Drama, Fantasy
+Box Office: 381878219
 Year: 2003
 ------------------------------------
 Title: The Matrix
-Box Office: $172,076,928
-Genres: Action, Sci-Fi
+Box Office: 172076928
 Year: 1999
 ------------------------------------
 Title: The Maze Runner
-Box Office: $102,427,862
-Genres: Action, Mystery, Sci-Fi
+Box Office: 102427862
 Year: 2014
 ------------------------------------
 Title: The Notebook
-Box Office: $81,417,274
-Genres: Drama, Romance
+Box Office: 81417274
 Year: 2004
 ------------------------------------
 Title: The Prestige
-Box Office: $53,089,891
-Genres: Drama, Mystery, Sci-Fi
+Box Office: 53089891
 Year: 2006
 ------------------------------------
 Title: The Shawshank Redemption
-Box Office: $28,767,189
-Genres: Drama
+Box Office: 28767189
 Year: 1994
 ------------------------------------
 Title: The Silence of the Lambs
-Box Office: $130,742,922
-Genres: Crime, Drama, Horror
+Box Office: 130742922
 Year: 1991
 ------------------------------------
 Title: The Twilight Saga: Breaking Dawn - Part 2
-Box Office: $292,324,737
-Genres: Adventure, Drama, Fantasy
+Box Office: 292324737
 Year: 2012
 ------------------------------------
 Title: The Ultimate 'WALL-E' Recap Cartoon
-Box Office: N/A
-Genres: Animation, Short
+Box Office: None
 Year: 2022
 ------------------------------------
 Title: The Wolf of Wall Street
-Box Office: $116,900,694
-Genres: Biography, Comedy, Crime
+Box Office: 116900694
 Year: 2013
 ------------------------------------
 Title: Thor: Ragnarok
-Box Office: $315,058,289
-Genres: Action, Adventure, Comedy
+Box Office: 315058289
 Year: 2017
 ------------------------------------
 Title: Toy Story
-Box Office: $223,225,679
-Genres: Animation, Adventure, Comedy
+Box Office: 223225679
 Year: 1995
 ------------------------------------
 Title: Toy Story 3
-Box Office: $415,004,880
-Genres: Animation, Adventure, Comedy
+Box Office: 415004880
 Year: 2010
 ------------------------------------
 Title: Turning Red
-Box Office: $1,399,001
-Genres: Animation, Adventure, Comedy
+Box Office: 1399001
 Year: 2022
 ------------------------------------
 Title: Twilight
-Box Office: $193,962,473
-Genres: Drama, Fantasy, Romance
+Box Office: 193962473
 Year: 2008
 ------------------------------------
 Title: Up
-Box Office: $293,004,164
-Genres: Animation, Adventure, Comedy
+Box Office: 293004164
 Year: 2009
 ------------------------------------
 Title: West Side Story
-Box Office: $44,055,492
-Genres: Crime, Drama, Musical
+Box Office: 44055492
 Year: 1961
 ------------------------------------
 Title: Whiplash
-Box Office: $14,003,391
-Genres: Drama, Music
+Box Office: 14003391
 Year: 2014
 ------------------------------------
 Title: Wreck-It Ralph
-Box Office: $189,422,889
-Genres: Animation, Adventure, Comedy
+Box Office: 189422889
 Year: 2012
 ------------------------------------
 Title: Zootopia
-Box Office: $341,268,248
-Genres: Animation, Action, Adventure
+Box Office: 341268248
 Year: 2016
 ------------------------------------

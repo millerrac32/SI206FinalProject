@@ -5,7 +5,7 @@ import csv
 import os
 import sqlite3
 
-DB_NAME = "test30.db"
+DB_NAME = "test100.db"
 
 # Fetch the list of countries from the CountryLayer API
 def get_countries(api_key):
@@ -89,6 +89,9 @@ def get_country_data(api_key, country_name):
     else:
         print(f"Error: Unable to fetch data for '{country_name}' (Status Code: {response.status_code}).")
 
+
+
+#####################################################################################################
 def populate_database_from_csv(db_name, csv_file="country_details.csv", limit=25):
     conn = sqlite3.connect(os.path.join("..", db_name))
     cursor = conn.cursor()
@@ -141,6 +144,7 @@ def populate_database_from_csv(db_name, csv_file="country_details.csv", limit=25
     conn.close()
     print(f"Inserted up to {limit} new rows into the database.")
 
+######################################################################################################################
 
 #function to interact with rachel's stuff
 #She has a locations table. has city_name, latitude, longitude

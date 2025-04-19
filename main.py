@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 # Paris: 
 # Tokyo: 
 
-DB_NAME = "test30.db"
+DB_NAME = "test100.db"
 
 #COUNTRIES INFORMATION
 #Table: countries
@@ -76,29 +76,55 @@ plt.ylabel('Average Temperature (°C)')
 plt.grid(True)
 plt.show()
 
-
-# 4. Graph: Average Box Office vs Average Temperature in Los Angeles (2013-2022)
+# Query to get yearly average temperature and total box office revenue for each year (2014-2022)
 query4 = """
-SELECT AVG(m.box_office) as avg_box_office, AVG(y.avg_temp) as avg_temp
-FROM movies m
-JOIN locations l ON l.city_name = 'Los Angeles'
-JOIN yearly_data y ON l.id = y.location_id
-WHERE m.year BETWEEN 2013 AND 2022 AND y.year = m.year
+SELECT y.year, AVG(y.avg_temp) as avg_temp, SUM(CAST(REPLACE(m.box_office, '$', '') AS REAL)) as total_box_office
+FROM yearly_data y
+LEFT JOIN movies m ON y.year = m.year
+WHERE y.year BETWEEN 2014 AND 2022 AND y.location_id = 10
+GROUP BY y.year
+ORDER BY y.year
 """
 cursor.execute(query4)
-data4 = cursor.fetchone()
+data4 = cursor.fetchall()
 
-avg_box_office = data4[0]
-avg_temp_la = data4[1]
+# Extract data for plotting
+years = [row[0] for row in data4]
+avg_temps = [row[1] for row in data4]
+total_box_offices = [row[2] for row in data4]
 
-plt.figure(figsize=(10, 6))
-plt.bar(['Average Box Office', 'Average Temperature (°C)'], [avg_box_office, avg_temp_la], color=['green', 'orange'])
-plt.title('Average Box Office vs Average Temperature in Los Angeles (2013-2022)')
-plt.ylabel('Value')
-plt.grid(axis='y')
+# Create a plot graph with two y-axes
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+# Plot average temperature on the first y-axis
+ax1.plot(years, avg_temps, marker='o', color='red', label='Average Temperature (°C)')
+ax1.set_xlabel('Year')
+ax1.set_ylabel('Average Temperature (°C)', color='red')
+ax1.tick_params(axis='y', labelcolor='red')
+ax1.grid(True)
+
+# Create a second y-axis for total box office revenue
+ax2 = ax1.twinx()
+ax2.plot(years, total_box_offices, marker='o', color='blue', label='Total Box Office Revenue ($)')
+ax2.set_ylabel('Total Box Office Revenue ($)', color='blue')
+ax2.tick_params(axis='y', labelcolor='blue')
+
+# Add a title and show the plot
+plt.title('Yearly Average Temperature vs Total Box Office Revenue (2014-2022)')
+fig.tight_layout()
 plt.show()
 
+# Create a scatter plot
+avg_temps = [row[1] for row in data4]  # Use average temperatures as x-axis
+total_box_offices = [row[2] for row in data4]  # Use total box office revenue as y-axis
 
+plt.figure(figsize=(12, 6))
+plt.scatter(avg_temps, total_box_offices, color='purple', marker='o')
+plt.title('Total Box Office Revenue vs Average Temperature (2014-2022)')
+plt.xlabel('Average Temperature (°C)')
+plt.ylabel('Total Box Office Revenue ($)')
+plt.grid(True)
+plt.show()
 
 # Close the database connection
 conn.close()

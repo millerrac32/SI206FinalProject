@@ -4,7 +4,7 @@ import sqlite3
 import csv
 import datetime
 
-DB_NAME = "test30.db"
+DB_NAME = "test100.db"
 USER_AGENT = "SI206Project/1.0 (your_email@umich.edu)"
 ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/era5"
 
@@ -120,6 +120,14 @@ def write_to_csv(city_name, daily_data):
         for record in yearly_averages:
             writer.writerow([city_name, record["year"], record["avg_temp"]])
 
+
+
+
+
+
+
+
+##############################################################################################################
 def process_csv():
     if not os.path.exists(CSV_FILE):
         print("CSV file does not exist. Run the script to generate it first.")
@@ -160,6 +168,8 @@ def process_csv():
         state_file.truncate()
 
     conn.close()
+##########################################################################################################
+
 
 def main():
     if not os.path.exists(STATE_FILE):
