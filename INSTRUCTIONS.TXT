@@ -1,8 +1,9 @@
+expected to be ran with python 3.10.10 on the terminal. Do not use IDE. 
 Follow these in order. Following them out of order will result in problems. 
 To open terminal do "control ~" at the same time on your keyboard
 Make sure directory is SI206FinalProject
 Delete all old data bases from directory
-DO NOT TRY TO RUN ANYTHING USING THE IDE. IT WILL MESS EVERYTHING UP.
+DO NOT TRY TO RUN ANYTHING USING THE IDE. IT WILL MESS THINGS UP.
 run "python3 movie.py" on terminal until it prints that it has exported 103 movies. This will be printed on the terminal (should be about 4-6 times)
 delete a file called "line.txt" from the SI206FinalProject directory
 Run "python3 weather.py" exactly 4 times
